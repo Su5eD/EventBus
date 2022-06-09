@@ -34,7 +34,8 @@ public class DeadlockingEventTest {
         System.setProperty("log4j2.contextSelector","org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
         System.setProperty("test.harness", "out/production/classes,out/test/classes,out/mlservice/classes,out/mlservice/resources,out/testJars/classes,build/classes/java/main,build/classes/java/mlservice,build/classes/java/test,build/classes/java/testJars,build/resources/mlservice");
         System.setProperty("test.harness.callable", "net.minecraftforge.eventbus.test.DeadlockingEventTest$Callback");
-   }
+    }
+
     @Disabled
     @RepeatedTest(500)
     void testConstructEventDeadlock() {
@@ -50,7 +51,7 @@ public class DeadlockingEventTest {
     void clearBusStuff() throws Exception {
         Whitebox.invokeMethod(EventListenerHelper.class, "clearAll");
         final HashSet<AbstractQueuedSynchronizer> workers = Whitebox.getInternalState(THREAD_POOL, "workers");
-        final List<Thread> threads = workers.stream().map(w -> Whitebox.<Thread>getInternalState(w, "thread")).collect(Collectors.toList());
+        final List<Thread> threads = workers.stream().map(w -> Whitebox.<Thread>getInternalState(w, "thread")).toList();
         threads.stream().map(Thread::getStackTrace).forEach(ts->LogManager.getLogger().info("\n"+stack(ts)));
         THREAD_POOL.shutdown();
     }
@@ -65,11 +66,8 @@ public class DeadlockingEventTest {
     public static class Callback {
         public static Callable<Void> supplier() {
             return () -> {
-                final TransformingClassLoader contextClassLoader = (TransformingClassLoader) Thread.currentThread().getContextClassLoader();
+                final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
                 LogManager.getLogger().info("Class Loader {}", contextClassLoader);
-                contextClassLoader.addTargetPackageFilter(s -> !(
-                        s.startsWith("net.minecraftforge.eventbus.") &&
-                                !s.startsWith("net.minecraftforge.eventbus.test")));
                 final CountDownLatch cdl = new CountDownLatch(1);
                 final IEventBus bus = BusBuilder.builder().build();
                 Callable<Void> task2 = () -> {
@@ -97,7 +95,7 @@ public class DeadlockingEventTest {
                     return null;
                 };
                 final List<Future<Void>> futures = Stream.of(task1, task2).
-                        map(THREAD_POOL::submit).collect(Collectors.toList());
+                        map(THREAD_POOL::submit).toList();
                 cdl.countDown();
                 try {
                     assertTimeoutPreemptively(Duration.ofSeconds(waittimeout), () -> futures.parallelStream().forEach(f -> {

@@ -1,7 +1,7 @@
 package net.minecraftforge.eventbus.test;
 
 import cpw.mods.modlauncher.Launcher;
-import cpw.mods.modlauncher.api.ITransformingClassLoader;
+//import cpw.mods.modlauncher.api.ITransformingClassLoader;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,10 +36,6 @@ public class GoodEventDispatcherTest {
         TestCallback.callable = () -> {
             calledback = true;
             final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            ((ITransformingClassLoader)contextClassLoader).
-                    addTargetPackageFilter(s->!(
-                            s.startsWith("net.minecraftforge.eventbus.") &&
-                            !s.startsWith("net.minecraftforge.eventbus.test")));
             final Class<?> aClass = Class.forName("net.minecraftforge.eventbus.api.BusBuilder", true, contextClassLoader);
             Object busBuilder = WhiteboxImpl.invokeMethod(aClass, "builder");
             eventBus = WhiteboxImpl.invokeMethod(busBuilder, "build");

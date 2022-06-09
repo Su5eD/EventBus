@@ -2,19 +2,12 @@ package net.minecraftforge.eventbus.benchmarks;
 
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.TransformingClassLoader;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.junit.jupiter.api.BeforeAll;
 import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.powermock.reflect.Whitebox;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.nio.file.FileSystems;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
 

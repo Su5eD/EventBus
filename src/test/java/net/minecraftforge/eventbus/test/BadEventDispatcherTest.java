@@ -1,7 +1,7 @@
 package net.minecraftforge.eventbus.test;
 
 import cpw.mods.modlauncher.Launcher;
-import cpw.mods.modlauncher.api.ITransformingClassLoader;
+//import cpw.mods.modlauncher.api.ITransformingClassLoader;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,16 +36,12 @@ public class BadEventDispatcherTest {
         TestCallback.callable = () -> {
             calledback = true;
             final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            ((ITransformingClassLoader)contextClassLoader).
-                    addTargetPackageFilter(s->!(
-                            s.startsWith("net.minecraftforge.eventbus.") &&
-                            !s.startsWith("net.minecraftforge.eventbus.test")));
             final Class<?> aClass = Class.forName("net.minecraftforge.eventbus.api.BusBuilder", true, contextClassLoader);
             Object busBuilder = WhiteboxImpl.invokeMethod(aClass, "builder");
             eventBus = WhiteboxImpl.invokeMethod(busBuilder, "build");
             transformedClass = Class.forName("net.minecraftforge.eventbus.testjar.EventBusTestClass", true, contextClassLoader);
-            WhiteboxImpl.invokeMethod(eventBus, "register", transformedClass.newInstance());
-            Object evt = Class.forName("net.minecraftforge.eventbus.testjar.DummyEvent$BadEvent", true, contextClassLoader).newInstance();
+            WhiteboxImpl.invokeMethod(eventBus, "register", transformedClass.getDeclaredConstructor().newInstance());
+            Object evt = Class.forName("net.minecraftforge.eventbus.testjar.DummyEvent$BadEvent", true, contextClassLoader).getDeclaredConstructor().newInstance();
             try {
                 WhiteboxImpl.invokeMethod(eventBus, "post", evt);
             } catch (RuntimeException ex) {

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -31,15 +32,12 @@ public class ParallelTransformedTest {
 
     public static class TestCallback {
         public static Callable<Void> supplier() {
-            final TransformingClassLoader contextClassLoader = (TransformingClassLoader) Thread.currentThread().getContextClassLoader();
-            contextClassLoader.addTargetPackageFilter(s->!(
-                    s.startsWith("net.minecraftforge.eventbus.") &&
-                    !s.startsWith("net.minecraftforge.eventbus.test")));
+            final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
             final Class<?> clazz;
             try {
                 clazz = Class.forName("net.minecraftforge.eventbus.test.ArmsLengthHandler", true, contextClassLoader);
-                return (Callable<Void>)clazz.newInstance();
-            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                return (Callable<Void>)clazz.getDeclaredConstructor().newInstance();
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
         }
