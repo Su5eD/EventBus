@@ -1,24 +1,13 @@
 package net.minecraftforge.eventbus.test;
 
-import net.minecraftforge.eventbus.EventBus;
-import net.minecraftforge.eventbus.ListenerList;
 import net.minecraftforge.eventbus.api.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 

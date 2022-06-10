@@ -1,7 +1,6 @@
 package net.minecraftforge.eventbus.test;
 
 import cpw.mods.modlauncher.Launcher;
-//import cpw.mods.modlauncher.api.ITransformingClassLoader;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.BeforeAll;
