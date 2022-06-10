@@ -24,7 +24,7 @@ public class ParallelTransformedTest {
     @Disabled
     @RepeatedTest(100)
     public void testOneBusParallelTransformed() {
-        System.setProperty("test.harness", "out/production/classes,out/test/classes,out/mlservice/classes,out/mlservice/resources,out/testJars/classes,build/classes/java/main,build/classes/java/mlservice,build/classes/java/test,build/classes/java/testJars,build/resources/mlservice");
+        System.setProperty("test.harness", "out/production/classes,out/test/classes,out/testJars/classes,build/classes/java/main,build/classes/java/test,build/classes/java/testJars");
         System.setProperty("test.harness.callable", "net.minecraftforge.eventbus.test.ParallelTransformedTest$TestCallback");
         Launcher.main("--version", "1.0", "--launchTarget", "testharness");
     }
