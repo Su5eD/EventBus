@@ -85,23 +85,26 @@ repositories {
 }
 
 dependencies {
+    implementation('org.ow2.asm:asm:9.1')
+    implementation('org.ow2.asm:asm-commons:9.1')
+    implementation('org.ow2.asm:asm-tree:9.1')
+    implementation('org.apache.logging.log4j:log4j-api:2.17.2')
+    implementation('cpw.mods:modlauncher:9.1.+')
+
+    compileOnly('org.jetbrains:annotations:21.0.1')
+    api('net.jodah:typetools:0.8.+')
+
     testImplementation('org.junit.jupiter:junit-jupiter-api:5.7.+')
     testImplementation('org.powermock:powermock-core:2.0.+')
     testImplementation('cpw.mods:modlauncher:9.1.+')
     testImplementation('cpw.mods:securejarhandler:1.0.+')
     testImplementation('org.junit.jupiter:junit-jupiter-engine:5.7.+')
-    testImplementation('org.apache.logging.log4j:log4j-core:2.14.1')
+    testImplementation('org.apache.logging.log4j:log4j-core:2.17.2')
     testImplementation('com.lmax:disruptor:3.4.2')
     testImplementation(sourceSets.testJars.runtimeClasspath)
     testImplementation('org.jetbrains:annotations:21.0.1')
+
     testJarsImplementation(sourceSets.main.output)
-    implementation('org.ow2.asm:asm:9.1')
-    implementation('org.ow2.asm:asm-commons:9.1')
-    implementation('org.ow2.asm:asm-tree:9.1')
-    implementation('org.apache.logging.log4j:log4j-api:2.14.1')
-    implementation('cpw.mods:modlauncher:9.1.+')
-    compileOnly('org.jetbrains:annotations:21.0.1')
-    api('net.jodah:typetools:0.8.+')
 
     jmhImplementation(sourceSets.main.output)
     jmhImplementation(sourceSets.testJars.output)
@@ -109,9 +112,6 @@ dependencies {
     jmhImplementation('org.powermock:powermock-core:2.0.+')
     jmhImplementation('cpw.mods:modlauncher:9.1.+')
     jmhImplementation('cpw.mods:securejarhandler:1.0.+')
-//    jmhImplementation('org.ow2.asm:asm:9.1')
-//    jmhImplementation('org.ow2.asm:asm-tree:9.1')
-//    jmhImplementation('org.ow2.asm:asm-commons:9.1')
     jmhAnnotationProcessor('org.openjdk.jmh:jmh-generator-annprocess:1.34')
 }
 
@@ -137,7 +137,7 @@ test {
 }
 
 task jmh(type: JavaExec, dependsOn: jmhClasses) {
-    mainClass = 'org.openjdk.jmh.Main'
+    mainClass.set('org.openjdk.jmh.Main')
     dependsOn 'testsJar'
 
     def results = file("${project.reportsDir}/jmh/result.json")
@@ -149,8 +149,6 @@ task jmh(type: JavaExec, dependsOn: jmhClasses) {
         jvmArgs(
                 '--module-path', sourceSets.jmh.runtimeClasspath.asPath,
                 '--add-modules', 'ALL-MODULE-PATH',
-                '--add-opens', 'net.minecraftforge.eventbus/net.minecraftforge.eventbus=powermock.reflect',
-                '--add-opens', 'net.minecraftforge.eventbus/net.minecraftforge.eventbus.api=powermock.reflect',
                 '--add-opens', 'net.minecraftforge.eventbus.testjars/net.minecraftforge.eventbus.benchmarks.compiled=net.minecraftforge.eventbus.benchmarks',
                 '--add-opens', 'java.base/java.lang=powermock.reflect',
                 '--add-opens', 'java.base/java.util.concurrent=powermock.reflect',
