@@ -3,24 +3,20 @@ package net.minecraftforge.eventbus.benchmarks.compiled;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class SubscriberStatic
-{
+public class SubscriberStatic {
 
     @SubscribeEvent
-    public static void onCancelableEvent(CancelableEvent event)
-    {
+    public static void onCancelableEvent(CancelableEvent event) {
 
     }
 
     @SubscribeEvent
-    public static void onResultEvent(ResultEvent event)
-    {
+    public static void onResultEvent(ResultEvent event) {
 
     }
 
     @SubscribeEvent
-    public static void onSimpleEvent(EventWithData event)
-    {
+    public static void onSimpleEvent(EventWithData event) {
 
     }
 }

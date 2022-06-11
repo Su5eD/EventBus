@@ -12,50 +12,42 @@ import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 @State(Scope.Benchmark)
-public class EventBusBenchmark
-{
-    private Consumer<Void> postStatic;
-    private Consumer<Void> postDynamic;
-    private Consumer<Void> postLambda;
-    private Consumer<Void> postCombined;
-
-    @SuppressWarnings("unchecked")
+public class EventBusBenchmark {
+    private Runnable postStatic;
+    private Runnable postDynamic;
+    private Runnable postLambda;
+    private Runnable postCombined;
+    
     @Setup
-    public void setup() throws Exception
-    {
+    public void setup() throws Exception {
         //Forks have an incorrect working dir set, so use the absolute path to correct
-        String basePath = Paths.get(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().getParent().toAbsolutePath().toString();
-        System.setProperty("test.harness", basePath + "/classes/java/testJars," + basePath + "/classes/java/main");
+        System.setProperty("test.harness", "");
         System.setProperty("test.harness.callable", "net.minecraftforge.eventbus.benchmarks.BenchmarkBootstrap");
         Launcher.main("--version", "1.0", "--launchTarget", "testharness");
 
-        TransformingClassLoader tcl = (TransformingClassLoader) Whitebox.getField(Launcher.class, "classLoader").get(Launcher.INSTANCE);
-        Class<?> cls = Class.forName("net.minecraftforge.eventbus.benchmarks.compiled.BenchmarkArmsLength", false, tcl);
-        postStatic = (Consumer<Void>) cls.getDeclaredField("postStatic").get(null);
-        postDynamic = (Consumer<Void>) cls.getDeclaredField("postDynamic").get(null);
-        postLambda = (Consumer<Void>) cls.getDeclaredField("postLambda").get(null);
-        postCombined = (Consumer<Void>) cls.getDeclaredField("postCombined").get(null);
+        final ClassLoader tcl = Whitebox.getInternalState(Launcher.INSTANCE, "classLoader");
+        final Class<?> cls = Class.forName("net.minecraftforge.eventbus.benchmarks.compiled.BenchmarkArmsLength", false, tcl);
+        postStatic = (Runnable) cls.getDeclaredField("postStatic").get(null);
+        postDynamic = (Runnable) cls.getDeclaredField("postDynamic").get(null);
+        postLambda = (Runnable) cls.getDeclaredField("postLambda").get(null);
+        postCombined = (Runnable) cls.getDeclaredField("postCombined").get(null);
     }
 
     @Benchmark
-    public int testDynamic()
-    {
-        postDynamic.accept(null);
+    public int testDynamic() {
+        postDynamic.run();
         return 0;
     }
 
     @Benchmark
-    public int testLambda()
-    {
-        postLambda.accept(null);
+    public int testLambda() {
+        postLambda.run();
         return 0;
     }
 
     @Benchmark
-    public int testStatic()
-    {
-        postStatic.accept(null);
+    public int testStatic() {
+        postStatic.run();
         return 0;
     }
-
 }
