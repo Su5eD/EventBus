@@ -11,18 +11,18 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 import org.junit.jupiter.api.Test;
 
-public class EventFiringEventTest {
+class EventFiringEventTest {
 
 	@Test
 	void eventHandlersCanFireEvents() {
-		IEventBus bus = BusBuilder.builder().build();
-		AtomicBoolean handled1 = new AtomicBoolean(false);
-		AtomicBoolean handled2 = new AtomicBoolean(false);
-		bus.addListener(EventPriority.NORMAL, false, Event1.class, (event1) -> {
+		final IEventBus bus = BusBuilder.builder().build();
+		final AtomicBoolean handled1 = new AtomicBoolean(false);
+		final AtomicBoolean handled2 = new AtomicBoolean(false);
+		bus.addListener(EventPriority.NORMAL, false, Event1.class, event1 -> {
 			bus.post(new AbstractEvent.Event2());
 			handled1.set(true);
 		});
-		bus.addListener(EventPriority.NORMAL, false, AbstractEvent.Event2.class, (event2) -> {
+		bus.addListener(EventPriority.NORMAL, false, AbstractEvent.Event2.class, event2 -> {
 			handled2.set(true);
 		});
 

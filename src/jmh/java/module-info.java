@@ -9,5 +9,6 @@ module net.minecraftforge.eventbus.benchmarks {
     requires net.minecraftforge.eventbus.testjars;
 
     exports net.minecraftforge.eventbus.benchmarks;
+    
     provides cpw.mods.modlauncher.api.ITransformationService with net.minecraftforge.eventbus.benchmarks.MockTransformerService;
 }

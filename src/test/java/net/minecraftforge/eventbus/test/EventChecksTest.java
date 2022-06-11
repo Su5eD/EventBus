@@ -12,12 +12,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 public class EventChecksTest {
     public interface MarkerEvent {}
     public static class BaseEvent extends Event implements MarkerEvent {
-        
         public BaseEvent() {}
     }
-    
     public static class OtherEvent extends Event {
-        
         public OtherEvent() {}
     }
     
@@ -33,15 +30,15 @@ public class EventChecksTest {
     }
 
     @Test
-    public void testValidType() {
-        IEventBus bus = bus();
+    void testValidType() {
+        final IEventBus bus = bus();
         Assertions.assertDoesNotThrow(() -> bus.addListener((BaseEvent e) -> {}));
         Assertions.assertDoesNotThrow(() -> bus.post(new BaseEvent()));
     }
     
     @Test
-    public void testInvalidType() {
-        IEventBus bus = bus();
+    void testInvalidType() {
+        final IEventBus bus = bus();
         Assertions.assertThrows(IllegalArgumentException.class, () -> bus.addListener((OtherEvent e) -> {}));
         Assertions.assertThrows(IllegalArgumentException.class, () -> bus.post(new OtherEvent()));
     }

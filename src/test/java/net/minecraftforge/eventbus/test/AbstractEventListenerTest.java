@@ -10,20 +10,21 @@ import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AbstractEventListenerTest {
+class AbstractEventListenerTest {
     @Test
     void eventHandlersCanSubscribeToAbstractEvents() {
-        IEventBus bus = BusBuilder.builder().build();
-        AtomicBoolean abstractSuperEventHandled = new AtomicBoolean(false);
-        AtomicBoolean concreteSuperEventHandled = new AtomicBoolean(false);
-        AtomicBoolean abstractSubEventHandled = new AtomicBoolean(false);
-        AtomicBoolean concreteSubEventHandled = new AtomicBoolean(false);
-        bus.addListener(EventPriority.NORMAL, false, AbstractSuperEvent.class, (event) -> abstractSuperEventHandled.set(true));
-        bus.addListener(EventPriority.NORMAL, false, ConcreteSuperEvent.class, (event) -> concreteSuperEventHandled.set(true));
-        bus.addListener(EventPriority.NORMAL, false, AbstractSubEvent.class, (event) -> abstractSubEventHandled.set(true));
-        bus.addListener(EventPriority.NORMAL, false, ConcreteSubEvent.class, (event) -> concreteSubEventHandled.set(true));
+        final IEventBus bus = BusBuilder.builder().build();
+        final AtomicBoolean abstractSuperEventHandled = new AtomicBoolean(false);
+        final AtomicBoolean concreteSuperEventHandled = new AtomicBoolean(false);
+        final AtomicBoolean abstractSubEventHandled = new AtomicBoolean(false);
+        final AtomicBoolean concreteSubEventHandled = new AtomicBoolean(false);
+        bus.addListener(EventPriority.NORMAL, false, AbstractSuperEvent.class, event -> abstractSuperEventHandled.set(true));
+        bus.addListener(EventPriority.NORMAL, false, ConcreteSuperEvent.class, event -> concreteSuperEventHandled.set(true));
+        bus.addListener(EventPriority.NORMAL, false, AbstractSubEvent.class, event -> abstractSubEventHandled.set(true));
+        bus.addListener(EventPriority.NORMAL, false, ConcreteSubEvent.class, event -> concreteSubEventHandled.set(true));
 
         bus.post(new ConcreteSubEvent());
 
@@ -31,7 +32,7 @@ public class AbstractEventListenerTest {
         assertTrue(concreteSuperEventHandled.get(), "handled concrete super event");
         assertTrue(abstractSubEventHandled.get(), "handled abstract sub event");
         assertTrue(concreteSubEventHandled.get(), "handled concrete sub event");
-        assertTrue(ConcreteSubEvent.MERGED_STATIC_INIT == 100, "static init merge failed");
+        assertEquals(100, ConcreteSubEvent.MERGED_STATIC_INIT, "static init merge failed");
     }
 
     // Below, we simulate the things that are added by EventSubclassTransformer
@@ -42,8 +43,8 @@ public class AbstractEventListenerTest {
     }
 
     public static class ConcreteSuperEvent extends AbstractSuperEvent {
-
-        private static ListenerList LISTENER_LIST = new ListenerList(EventListenerHelper.getListenerList(ConcreteSuperEvent.class.getSuperclass()));
+        private static final ListenerList LISTENER_LIST = new ListenerList(EventListenerHelper.getListenerList(ConcreteSuperEvent.class.getSuperclass()));
+        
         public ConcreteSuperEvent() {}
 
         @Override
@@ -59,7 +60,8 @@ public class AbstractEventListenerTest {
 
     public static class ConcreteSubEvent extends AbstractSubEvent {
         protected static int MERGED_STATIC_INIT = 100;
-        private static ListenerList LISTENER_LIST = new ListenerList(EventListenerHelper.getListenerList(ConcreteSubEvent.class.getSuperclass()));
+        private static final ListenerList LISTENER_LIST = new ListenerList(EventListenerHelper.getListenerList(ConcreteSubEvent.class.getSuperclass()));
+        
         public ConcreteSubEvent() {}
 
         @Override

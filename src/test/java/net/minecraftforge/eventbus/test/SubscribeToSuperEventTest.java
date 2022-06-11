@@ -11,15 +11,15 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 import org.junit.jupiter.api.Test;
 
-public class SubscribeToSuperEventTest {
+class SubscribeToSuperEventTest {
 
 	@Test
 	void eventHandlersCanSubscribeToSuperEvents() {
-		IEventBus bus = BusBuilder.builder().build();
-		AtomicBoolean superEventHandled = new AtomicBoolean(false);
-		AtomicBoolean subEventHandled = new AtomicBoolean(false);
-		bus.addListener(EventPriority.NORMAL, false, SuperEvent.class, (event) -> {
-			Class<? extends SuperEvent> eventClass = event.getClass();
+		final IEventBus bus = BusBuilder.builder().build();
+		final AtomicBoolean superEventHandled = new AtomicBoolean(false);
+		final AtomicBoolean subEventHandled = new AtomicBoolean(false);
+		bus.addListener(EventPriority.NORMAL, false, SuperEvent.class, event -> {
+			final Class<? extends SuperEvent> eventClass = event.getClass();
 			if (eventClass == SuperEvent.class) {
 				superEventHandled.set(true);
 			} else if (eventClass == SubEvent.class) {

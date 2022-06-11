@@ -94,6 +94,7 @@ dependencies {
     compileOnly('org.jetbrains:annotations:21.0.1')
     api('net.jodah:typetools:0.8.+')
 
+    testImplementation(sourceSets.testJars.output)
     testImplementation('org.junit.jupiter:junit-jupiter-api:5.7.+')
     testImplementation('org.powermock:powermock-core:2.0.+')
     testImplementation('cpw.mods:modlauncher:9.1.+')
@@ -101,7 +102,6 @@ dependencies {
     testImplementation('org.junit.jupiter:junit-jupiter-engine:5.7.+')
     testImplementation('org.apache.logging.log4j:log4j-core:2.17.2')
     testImplementation('com.lmax:disruptor:3.4.2')
-    testImplementation(sourceSets.testJars.runtimeClasspath)
     testImplementation('org.jetbrains:annotations:21.0.1')
 
     testJarsImplementation(sourceSets.main.output)

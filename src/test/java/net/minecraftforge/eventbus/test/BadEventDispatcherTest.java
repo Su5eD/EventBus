@@ -5,55 +5,39 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.powermock.reflect.internal.WhiteboxImpl;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.concurrent.Callable;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BadEventDispatcherTest {
-
-    private Object eventBus;
-    private boolean gotException;
+class BadEventDispatcherTest {
+    private boolean calledback;
 
     @BeforeAll
     public static void setup() {
         Configurator.setRootLevel(Level.DEBUG);
     }
 
-    boolean calledback;
-    Class<?> transformedClass;
-
     @Test
-    public void testBadEvent() throws IOException, URISyntaxException {
-        System.setProperty("test.harness", "build/classes/java/testJars,build/classes/java/main");
+    void testBadEvent() {
+        System.setProperty("test.harness", "");
         System.setProperty("test.harness.callable", "net.minecraftforge.eventbus.test.BadEventDispatcherTest$TestCallback");
         calledback = false;
         TestCallback.callable = () -> {
             calledback = true;
             final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            final Class<?> aClass = Class.forName("net.minecraftforge.eventbus.api.BusBuilder", true, contextClassLoader);
-            Object busBuilder = WhiteboxImpl.invokeMethod(aClass, "builder");
-            eventBus = WhiteboxImpl.invokeMethod(busBuilder, "build");
-            transformedClass = Class.forName("net.minecraftforge.eventbus.testjar.EventBusTestClass", true, contextClassLoader);
-            WhiteboxImpl.invokeMethod(eventBus, "register", transformedClass.getDeclaredConstructor().newInstance());
-            Object evt = Class.forName("net.minecraftforge.eventbus.testjar.DummyEvent$BadEvent", true, contextClassLoader).getDeclaredConstructor().newInstance();
-            try {
-                WhiteboxImpl.invokeMethod(eventBus, "post", evt);
-            } catch (RuntimeException ex) {
-                gotException = true;
-            }
+            final Class<?> clazz = Class.forName("net.minecraftforge.eventbus.test.BadEventArmsLength", true, contextClassLoader);
+            final Callable<Void> instance = (Callable<Void>) clazz.getConstructor().newInstance();
+            instance.call();
             return null;
         };
         Launcher.main("--version", "1.0", "--launchTarget", "testharness");
         assertTrue(calledback, "We got called back");
-        assertTrue(gotException, "We got the exception");
     }
 
     public static class TestCallback {
         private static Callable<Void> callable;
+
         public static Callable<Void> supplier() {
             return callable;
         }

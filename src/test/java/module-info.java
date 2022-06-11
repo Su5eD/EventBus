@@ -1,6 +1,6 @@
 open module net.minecraftforge.eventbus.test {
     requires cpw.mods.modlauncher;
-    requires static net.minecraftforge.eventbus.testjars;
+    requires net.minecraftforge.eventbus.testjars;
 
     requires org.junit.jupiter.api;
     requires powermock.core;
@@ -14,6 +14,6 @@ open module net.minecraftforge.eventbus.test {
     requires org.jetbrains.annotations;
 
     exports net.minecraftforge.eventbus.test;
+    
     provides cpw.mods.modlauncher.api.ITransformationService with net.minecraftforge.eventbus.test.MockTransformerService;
-
 }

@@ -10,34 +10,36 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EventLambdaTest {
+class EventLambdaTest {
     boolean hit;
+    
     @Test
-    public void eventLambda() {
-        final IEventBus iEventBus = BusBuilder.builder().build();
-        iEventBus.addListener((Event e)-> hit = true);
-        iEventBus.post(new Event());
+    void eventLambda() {
+        final IEventBus bus = BusBuilder.builder().build();
+        bus.addListener((Event e)-> hit = true);
+        bus.post(new Event());
         assertTrue(hit, "Hit event");
     }
 
     public void consumeSubEvent(SubEvent e) {
         hit = true;
     }
+    
     @Test
     void eventSubLambda() {
-        final IEventBus iEventBus = BusBuilder.builder().build();
-        iEventBus.addListener(this::consumeSubEvent);
-        iEventBus.post(new SubEvent());
+        final IEventBus bus = BusBuilder.builder().build();
+        bus.addListener(this::consumeSubEvent);
+        bus.post(new SubEvent());
         assertTrue(hit, "Hit subevent");
         hit = false;
-        iEventBus.post(new Event());
-        assertTrue(!hit, "Didn't hit parent event");
+        bus.post(new Event());
+        assertFalse(hit, "Didn't hit parent event");
     }
 
     @Test
     void eventGenericThing() {
         // pathological test because you can't derive the lambda types in all cases...
-        IEventBus bus = BusBuilder.builder().build();
+        final IEventBus bus = BusBuilder.builder().build();
         registerSomeGodDamnWrapper(bus, CancellableEvent.class, this::subEventFunction);
         final CancellableEvent event = new CancellableEvent();
         bus.post(event);

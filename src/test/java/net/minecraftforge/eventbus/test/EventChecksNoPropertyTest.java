@@ -10,12 +10,9 @@ import org.junit.jupiter.api.Test;
 public class EventChecksNoPropertyTest {
     public interface MarkerEvent {}
     public static class BaseEvent extends Event implements MarkerEvent {
-
         public BaseEvent() {}
     }
-
     public static class OtherEvent extends Event {
-
         public OtherEvent() {}
     }
 
@@ -26,15 +23,15 @@ public class EventChecksNoPropertyTest {
     }
 
     @Test
-    public void testValidType() {
-        IEventBus bus = bus();
+    void testValidType() {
+        final IEventBus bus = bus();
         Assertions.assertDoesNotThrow(() -> bus.addListener((BaseEvent e) -> {}));
         Assertions.assertDoesNotThrow(() -> bus.post(new BaseEvent()));
     }
 
     @Test
-    public void testInvalidType() {
-        IEventBus bus = bus();
+    void testInvalidType() {
+        final IEventBus bus = bus();
         Assertions.assertThrows(IllegalArgumentException.class, () -> bus.addListener((OtherEvent e) -> {}));
         Assertions.assertDoesNotThrow(() -> bus.post(new OtherEvent()));
     }
